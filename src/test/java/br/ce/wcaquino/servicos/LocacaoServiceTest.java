@@ -6,7 +6,9 @@ import static br.ce.wcaquino.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -57,7 +59,7 @@ public class LocacaoServiceTest {
 		//cenario
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("usuario 1");
-		Filme filme = new Filme("Filme 1", 5, 10.5);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 5, 10.5));
 
 		
 		//acao
@@ -76,7 +78,7 @@ public class LocacaoServiceTest {
 	public void testeLocacao_semEstoque() throws Exception {
 		//cenario
 		Usuario usuario = new Usuario("usuario 1");
-		Filme filme = new Filme("Filme 1", 0, 10.5);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 0, 10.5));
 		
 		//acao
 		service.alugarFilme(usuario, filme);
@@ -85,7 +87,7 @@ public class LocacaoServiceTest {
 	@Test
 	public void testeLocacao_semUsuario() throws FilmeSemEstoqueException {
 		//cenario
-		Filme filme = new Filme("Filme 1", 2, 10.5);
+		List<Filme> filme = Arrays.asList(new Filme("Filme 1", 5, 10.5));
 		
 		//acao
 		try {
