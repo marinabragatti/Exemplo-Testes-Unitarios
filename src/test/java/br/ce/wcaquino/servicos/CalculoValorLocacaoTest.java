@@ -1,5 +1,6 @@
 package br.ce.wcaquino.servicos;
 
+import static br.ce.wcaquino.builder.FilmeBuilder.umFilme;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -14,6 +15,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import br.ce.wcaquino.daos.LocacaoDAO;
+import br.ce.wcaquino.daos.LocacaoDAOFake;
 import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
@@ -23,7 +26,7 @@ import br.ce.wcaquino.exceptions.LocadoraException;
 @RunWith(Parameterized.class)
 public class CalculoValorLocacaoTest {
 	
-	private LocacaoService service;
+private LocacaoService service;
 	
 	@Parameter
 	public List<Filme> filmes;
@@ -37,14 +40,16 @@ public class CalculoValorLocacaoTest {
 	@Before
 	public void setUp() {
 		service = new LocacaoService();
+		LocacaoDAO dao = new LocacaoDAOFake();
+		service.setLocacaoDAO(dao);
 	}
 	
-	private static Filme filme1 = new Filme("Filme1", 4, 4.0);
-	private static Filme filme2 = new Filme("Filme2", 4, 4.0);
-	private static Filme filme3 = new Filme("Filme3", 4, 4.0);
-	private static Filme filme4 = new Filme("Filme4", 4, 4.0);
-	private static Filme filme5 = new Filme("Filme5", 4, 4.0);
-	private static Filme filme6 = new Filme("Filme6", 4, 4.0);
+	private static Filme filme1 = umFilme().agora();
+	private static Filme filme2 = umFilme().agora();
+	private static Filme filme3 = umFilme().agora();
+	private static Filme filme4 = umFilme().agora();
+	private static Filme filme5 = umFilme().agora();
+	private static Filme filme6 = umFilme().agora();
 	
 	@Parameters(name= "{2}")
 	public static Collection<Object[]> getParametros(){
