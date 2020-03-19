@@ -33,7 +33,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import br.ce.wcaquino.daos.LocacaoDAO;
 import br.ce.wcaquino.entidades.Filme;
@@ -45,12 +49,14 @@ import br.ce.wcaquino.utils.DataUtils;
 
 public class LocacaoServiceTest {
 
+	@InjectMocks
 	private LocacaoService service;
 	
+	@Mock
 	private SPCService spc;
-	
+	@Mock
 	private LocacaoDAO dao;
-	
+	@Mock
 	private EmailService email;
 
 	// Para colocar várias verificações com mesmo cenário e ação e conseguir ver
@@ -64,13 +70,7 @@ public class LocacaoServiceTest {
 
 	@Before
 	public void setUp() {
-		service = new LocacaoService();
-		dao = Mockito.mock(LocacaoDAO.class);
-		service.setLocacaoDAO(dao);
-		spc = Mockito.mock(SPCService.class);
-		service.setSPCService(spc);
-		email = Mockito.mock(EmailService.class);
-		service.setEmailService(email);
+		MockitoAnnotations.initMocks(this);
 	}
 
 	@After
@@ -165,7 +165,7 @@ public class LocacaoServiceTest {
 	}
 	
 	@Test
-	public void naoAlugarParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException {
+	public void naoAlugarParaNegativadoSPC() throws Exception {
 		//cenario
 		Usuario usuario = umUsuario().agora();
 		List<Filme> filmes = Arrays.asList(umFilme().agora());
@@ -205,6 +205,40 @@ public class LocacaoServiceTest {
 		verify(email, never()).notificarAtraso(usuario2);
 		verify(email, Mockito.atLeastOnce()).notificarAtraso(usuario3);
 		verifyNoMoreInteractions(email);
+	}
+	
+	@Test
+	public void deveTratarErroSPC() throws Exception {
+		//cenario
+		Usuario usuario = umUsuario().agora();
+		List<Filme> filmes = Arrays.asList(umFilme().agora());
+		
+		when(spc.possuiNegativacao(usuario)).thenThrow(new Exception("Falha!!!"));
+		
+		//verificacao
+		exception.expect(LocadoraException.class);
+		exception.expectMessage("Problemas no SPC, tente novamente");
+		
+		//acao
+		service.alugarFilme(usuario, filmes);	
+	}
+	
+	@Test
+	public void prorrogarUmaLocacao() {
+		//cenario
+		Locacao locacao = umLocacao().agora();
+		
+		//acao
+		service.prorrogarLocacao(locacao, 3);
+		
+		//verificacao
+		ArgumentCaptor<Locacao> argCapt = ArgumentCaptor.forClass(Locacao.class);
+		Mockito.verify(dao).salvar(argCapt.capture());
+		Locacao locacaoRetornada = argCapt.getValue();
+		
+		error.checkThat(locacaoRetornada.getValor(), is(12.0));
+		error.checkThat(locacaoRetornada.getDataLocacao(), ehHoje());
+		error.checkThat(locacaoRetornada.getDataRetorno(), ehHojeComDiferencaDias(3));
 	}
 }
 
