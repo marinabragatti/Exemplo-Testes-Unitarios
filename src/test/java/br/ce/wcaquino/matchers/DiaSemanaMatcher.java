@@ -17,7 +17,6 @@ public class DiaSemanaMatcher extends TypeSafeMatcher <Date> {
 		this.diaSemana = diaSemana;
 	}
 
-	@Override
 	public void describeTo(Description description) {
 		Calendar data = Calendar.getInstance();
 		data.set(Calendar.DAY_OF_WEEK, diaSemana);

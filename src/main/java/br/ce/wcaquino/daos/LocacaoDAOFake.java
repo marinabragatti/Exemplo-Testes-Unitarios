@@ -9,7 +9,6 @@ public class LocacaoDAOFake implements LocacaoDAO{
 		
 	}
 
-	@Override
 	public List<Locacao> obterLocacoesPendentes() {
 		return null;
 	}
