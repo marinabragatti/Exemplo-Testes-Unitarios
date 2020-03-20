@@ -1,14 +1,15 @@
 package br.ce.wcaquino.suite;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import br.ce.wcaquino.servicos.CalculadoraTest;
 import br.ce.wcaquino.servicos.CalculoValorLocacaoTest;
 import br.ce.wcaquino.servicos.LocacaoServiceTest;
 
-//@RunWith(Suite.class) ***Posso fazer todos os testes mandado rodar tudo no pacote testes, sem precisar de suites.
+@RunWith(Suite.class) //***Posso fazer todos os testes mandado rodar tudo no pacote testes, sem precisar de suites.
 @SuiteClasses({
-	CalculadoraTest.class,
+//	CalculadoraTest.class,
 	CalculoValorLocacaoTest.class,
 	LocacaoServiceTest.class
 })
